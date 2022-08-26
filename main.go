@@ -29,7 +29,10 @@ func main() {
 
 	db.AutoMigrate(&models.Item{}, &models.Order{}, &models.Outbound{})
 
-	item := models.Item{Name: "item1", Qty: 10, Weight: 20.1}
+	var item models.Item
+	var items []models.Item
+
+	item = models.Item{Name: "item1", Qty: 10, Weight: 20.1}
 	db.Create(&item)
 	fmt.Println(item)
 
@@ -48,4 +51,13 @@ func main() {
 
 		return nil
 	})
+
+	db.Order("id asc").Find(&items)
+	fmt.Println(items)
+
+	db.Model(&items[0]).Update("name", "updated name")
+
+	db.Find(&item)
+	db.Delete(&item)            // soft delete
+	db.Unscoped().Delete(&item) // hard delete
 }
